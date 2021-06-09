@@ -119,7 +119,7 @@ func (d *Document) appendMetas(pdf *gofpdf.Fpdf) {
 	refString := fmt.Sprintf("%s: %s", d.Options.TextRefTitle, d.Ref)
 
 	offset := 60.0
-	pdf.SetXY(150, BaseMarginTop+offset)
+	pdf.SetXY(140, BaseMarginTop+offset)
 	pdf.SetFont("Helvetica", "", 8)
 	pdf.CellFormat(50, 4, encodeString(refString), "0", 0, "L", false, 0, "")
 
@@ -127,7 +127,7 @@ func (d *Document) appendMetas(pdf *gofpdf.Fpdf) {
 	if len(d.Version) > 0 {
 		offset = offset + 4
 		versionString := fmt.Sprintf("%s: %s", d.Options.TextVersionTitle, d.Version)
-		pdf.SetXY(150, BaseMarginTop+offset)
+		pdf.SetXY(140, BaseMarginTop+offset)
 		pdf.SetFont("Helvetica", "", 8)
 		pdf.CellFormat(50, 4, encodeString(versionString), "0", 0, "R", false, 0, "")
 	}
@@ -139,7 +139,7 @@ func (d *Document) appendMetas(pdf *gofpdf.Fpdf) {
 	}
 	offset = offset + 4
 	dateString := fmt.Sprintf("%s: %s", d.Options.TextDateTitle, date)
-	pdf.SetXY(150, BaseMarginTop+offset)
+	pdf.SetXY(140, BaseMarginTop+offset)
 	pdf.SetFont("Helvetica", "", 8)
 	pdf.CellFormat(50, 4, encodeString(dateString), "0", 0, "L", false, 0, "")
 }

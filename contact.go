@@ -35,7 +35,7 @@ func (c *Contact) appendContactTODoc(x float64, y float64, fill bool, logoAlign 
 			var imageOpt gofpdf.ImageOptions
 			imageOpt.ImageType = format
 
-			pdf.ImageOptions(fileName, pdf.GetX(), y, 0, 8, false, imageOpt, 0, "")
+			pdf.ImageOptions(fileName, pdf.GetX(), y, 0, 9, false, imageOpt, 0, "")
 
 			pdf.SetY(y + 20)
 		}
@@ -83,7 +83,7 @@ func (c *Contact) appendContactTODoc(x float64, y float64, fill bool, logoAlign 
 }
 
 func (c *Contact) appendCompanyContactToDoc(pdf *gofpdf.Fpdf) float64 {
-	return c.appendContactTODoc(150, BaseMarginTop, false, "L", pdf)
+	return c.appendContactTODoc(140, BaseMarginTop, false, "L", pdf)
 }
 
 func (c *Contact) appendCustomerContactToDoc(pdf *gofpdf.Fpdf) float64 {
