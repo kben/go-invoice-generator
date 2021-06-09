@@ -10,12 +10,13 @@ import (
 
 // Item represent a 'product' or a 'service'
 type Item struct {
-	Name        string    `json:"name,omitempty" validate:"required"`
-	Description string    `json:"description,omitempty"`
-	UnitCost    string    `json:"unit_cost,omitempty"`
-	Quantity    string    `json:"quantity,omitempty"`
-	Tax         *Tax      `json:"tax,omitempty"`
-	Discount    *Discount `json:"discount,omitempty"`
+	Name          string    `json:"name,omitempty" validate:"required"`
+	Description   string    `json:"description,omitempty"`
+	ProductNumber string    `json:"productnumber,omitempty"`
+	UnitCost      string    `json:"unit_cost,omitempty"`
+	Quantity      string    `json:"quantity,omitempty"`
+	Tax           *Tax      `json:"tax,omitempty"`
+	Discount      *Discount `json:"discount,omitempty"`
 }
 
 func (i *Item) unitCost() decimal.Decimal {
@@ -169,11 +170,25 @@ func (i *Item) appendColTo(options *Options, pdf *gofpdf.Fpdf) {
 		"",
 	)
 
-	// Discount
-	pdf.SetX(ItemColDiscountOffset)
+	// ProductNumber
+	pdf.SetX(ItemColProductNumberOffset)
+	pdf.CellFormat(
+		ItemColTotalTTCOffset-ItemColProductNumberOffset,
+		colHeight,
+		encodeString(i.ProductNumber),
+		"0",
+		0,
+		"",
+		false,
+		0,
+		"",
+	)
+
+	/* Discount
+	pdf.SetX(ItemColProductNumberOffset)
 	if i.Discount == nil {
 		pdf.CellFormat(
-			ItemColTotalTTCOffset-ItemColDiscountOffset,
+			ItemColTotalTTCOffset-ItemColProductNumberOffset,
 			colHeight,
 			"--",
 			"0",
@@ -207,7 +222,7 @@ func (i *Item) appendColTo(options *Options, pdf *gofpdf.Fpdf) {
 		// discount title
 		// lastY := pdf.GetY()
 		pdf.CellFormat(
-			ItemColTotalTTCOffset-ItemColDiscountOffset,
+			ItemColTotalTTCOffset-ItemColProductNumberOffset,
 			colHeight/2,
 			discountTitle,
 			"0",
@@ -219,12 +234,12 @@ func (i *Item) appendColTo(options *Options, pdf *gofpdf.Fpdf) {
 		)
 
 		// discount desc
-		pdf.SetXY(ItemColDiscountOffset, baseY+(colHeight/2))
+		pdf.SetXY(ItemColProductNumberOffset, baseY+(colHeight/2))
 		pdf.SetFont("Helvetica", "", SmallTextFontSize)
 		pdf.SetTextColor(GreyTextColor[0], GreyTextColor[1], GreyTextColor[2])
 
 		pdf.CellFormat(
-			ItemColTotalTTCOffset-ItemColDiscountOffset,
+			ItemColTotalTTCOffset-ItemColProductNumberOffset,
 			colHeight/2,
 			discountDesc,
 			"0",
@@ -240,13 +255,14 @@ func (i *Item) appendColTo(options *Options, pdf *gofpdf.Fpdf) {
 		pdf.SetTextColor(BaseTextColor[0], BaseTextColor[1], BaseTextColor[2])
 		pdf.SetY(baseY)
 	}
+	*/
 
 	// Tax
 	pdf.SetX(ItemColTaxOffset)
 	if i.Tax == nil {
 		// If no tax
 		pdf.CellFormat(
-			ItemColDiscountOffset-ItemColTaxOffset,
+			ItemColProductNumberOffset-ItemColTaxOffset,
 			colHeight,
 			"--",
 			"0",
@@ -280,7 +296,7 @@ func (i *Item) appendColTo(options *Options, pdf *gofpdf.Fpdf) {
 		// tax title
 		// lastY := pdf.GetY()
 		pdf.CellFormat(
-			ItemColDiscountOffset-ItemColTaxOffset,
+			ItemColProductNumberOffset-ItemColTaxOffset,
 			colHeight/2,
 			taxTitle,
 			"0",
@@ -297,7 +313,7 @@ func (i *Item) appendColTo(options *Options, pdf *gofpdf.Fpdf) {
 		pdf.SetTextColor(GreyTextColor[0], GreyTextColor[1], GreyTextColor[2])
 
 		pdf.CellFormat(
-			ItemColDiscountOffset-ItemColTaxOffset,
+			ItemColProductNumberOffset-ItemColTaxOffset,
 			colHeight/2,
 			taxDesc,
 			"0",

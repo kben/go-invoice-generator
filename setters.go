@@ -72,6 +72,12 @@ func (d *Document) SetPaymentTerm(term string) *Document {
 	return d
 }
 
+// SetBankingDetails of document
+func (d *Document) SetBankingDetails(details string) *Document {
+	d.BankingDetails = details
+	return d
+}
+
 // SetDefaultTax of document
 func (d *Document) SetDefaultTax(tax *Tax) *Document {
 	d.DefaultTax = tax
