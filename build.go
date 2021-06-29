@@ -177,78 +177,90 @@ func (d *Document) drawsTableTitles(pdf *gofpdf.Fpdf) {
 	)
 
 	// Unit price
-	pdf.SetX(ItemColUnitPriceOffset)
-	pdf.CellFormat(
-		ItemColQuantityOffset-ItemColUnitPriceOffset,
-		6,
-		encodeString(d.Options.TextItemsUnitCostTitle),
-		"0",
-		0,
-		"",
-		false,
-		0,
-		"",
-	)
+	if len(d.Options.TextItemsUnitCostTitle) > 1 {
+		pdf.SetX(ItemColUnitPriceOffset)
+		pdf.CellFormat(
+			ItemColQuantityOffset-ItemColUnitPriceOffset,
+			6,
+			encodeString(d.Options.TextItemsUnitCostTitle),
+			"0",
+			0,
+			"",
+			false,
+			0,
+			"",
+		)
+	}
 
 	// Quantity
-	pdf.SetX(ItemColQuantityOffset)
-	pdf.CellFormat(
-		ItemColTaxOffset-ItemColQuantityOffset,
-		6,
-		encodeString(d.Options.TextItemsQuantityTitle),
-		"0",
-		0,
-		"",
-		false,
-		0,
-		"",
-	)
+	if len(d.Options.TextItemsQuantityTitle) > 1 {
+		pdf.SetX(ItemColQuantityOffset)
+		pdf.CellFormat(
+			ItemColTaxOffset-ItemColQuantityOffset,
+			6,
+			encodeString(d.Options.TextItemsQuantityTitle),
+			"0",
+			0,
+			"",
+			false,
+			0,
+			"",
+		)
+	}
 
 	// Total HT
-	pdf.SetX(ItemColTotalHTOffset)
-	pdf.CellFormat(
-		ItemColTaxOffset-ItemColTotalHTOffset,
-		6,
-		encodeString(d.Options.TextItemsTotalHTTitle),
-		"0",
-		0,
-		"",
-		false,
-		0,
-		"",
-	)
+	if len(d.Options.TextItemsTotalHTTitle) > 1 {
+		pdf.SetX(ItemColTotalHTOffset)
+		pdf.CellFormat(
+			ItemColTaxOffset-ItemColTotalHTOffset,
+			6,
+			encodeString(d.Options.TextItemsTotalHTTitle),
+			"0",
+			0,
+			"",
+			false,
+			0,
+			"",
+		)
+	}
 
 	// Tax
-	pdf.SetX(ItemColTaxOffset)
-	pdf.CellFormat(
-		ItemColProductNumberOffset-ItemColTaxOffset,
-		6,
-		encodeString(d.Options.TextItemsTaxTitle),
-		"0",
-		0,
-		"",
-		false,
-		0,
-		"",
-	)
+	if len(d.Options.TextItemsTaxTitle) > 1 {
+		pdf.SetX(ItemColTaxOffset)
+		pdf.CellFormat(
+			ItemColProductNumberOffset-ItemColTaxOffset,
+			6,
+			encodeString(d.Options.TextItemsTaxTitle),
+			"0",
+			0,
+			"",
+			false,
+			0,
+			"",
+		)
+	}
 
 	// ProductNumber
-	pdf.SetX(ItemColProductNumberOffset)
-	pdf.CellFormat(
-		ItemColTotalTTCOffset-ItemColProductNumberOffset,
-		6,
-		encodeString(d.Options.TextItemsProductNumberTitle),
-		"0",
-		0,
-		"",
-		false,
-		0,
-		"",
-	)
+	if len(d.Options.TextItemsProductNumberTitle) > 1 {
+		pdf.SetX(ItemColProductNumberOffset)
+		pdf.CellFormat(
+			ItemColTotalTTCOffset-ItemColProductNumberOffset,
+			6,
+			encodeString(d.Options.TextItemsProductNumberTitle),
+			"0",
+			0,
+			"",
+			false,
+			0,
+			"",
+		)
+	}
 
 	// TOTAL TTC
-	pdf.SetX(ItemColTotalTTCOffset)
-	pdf.CellFormat(190-ItemColTotalTTCOffset, 6, encodeString(d.Options.TextItemsTotalTTCTitle), "0", 0, "", false, 0, "")
+	if len(d.Options.TextItemsTotalTTCTitle) > 1 {
+		pdf.SetX(ItemColTotalTTCOffset)
+		pdf.CellFormat(190-ItemColTotalTTCOffset, 6, encodeString(d.Options.TextItemsTotalTTCTitle), "0", 0, "", false, 0, "")
+	}
 }
 
 func (d *Document) appendItems(pdf *gofpdf.Fpdf) {
@@ -375,7 +387,7 @@ func (d *Document) appendTotal(pdf *gofpdf.Fpdf) {
 	pdf.SetFont("Helvetica", "", LargeTextFontSize)
 	pdf.SetTextColor(BaseTextColor[0], BaseTextColor[1], BaseTextColor[2])
 
-	if d.Options.TextTotalTotal != "-" {
+	if d.Options.TextTotalTotal != " " {
 		// Draw TOTAL HT title
 		pdf.SetX(120)
 		pdf.SetFillColor(DarkBgColor[0], DarkBgColor[1], DarkBgColor[2])
@@ -389,7 +401,7 @@ func (d *Document) appendTotal(pdf *gofpdf.Fpdf) {
 		pdf.CellFormat(40, 10, ac.FormatMoneyDecimal(total), "0", 0, "L", false, 0, "")
 	}
 
-	if d.Discount != nil {
+	if d.Discount != nil && len(d.Options.TextTotalDiscounted) > 1 {
 		baseY := pdf.GetY() + 10
 
 		// Draw DISCOUNTED title
@@ -437,29 +449,33 @@ func (d *Document) appendTotal(pdf *gofpdf.Fpdf) {
 	}
 
 	// Draw TAX title
-	pdf.SetX(120)
-	pdf.SetFillColor(DarkBgColor[0], DarkBgColor[1], DarkBgColor[2])
-	pdf.Rect(120, pdf.GetY(), 40, 10, "F")
-	pdf.CellFormat(38, 10, encodeString(d.Options.TextTotalTax), "0", 0, "R", false, 0, "")
+	if len(d.Options.TextTotalTax) > 1 {
+		pdf.SetX(120)
+		pdf.SetFillColor(DarkBgColor[0], DarkBgColor[1], DarkBgColor[2])
+		pdf.Rect(120, pdf.GetY(), 40, 10, "F")
+		pdf.CellFormat(38, 10, encodeString(d.Options.TextTotalTax), "0", 0, "R", false, 0, "")
 
-	// Draw TAX amount
-	pdf.SetX(162)
-	pdf.SetFillColor(GreyBgColor[0], GreyBgColor[1], GreyBgColor[2])
-	pdf.Rect(160, pdf.GetY(), 40, 10, "F")
-	pdf.CellFormat(40, 10, ac.FormatMoneyDecimal(totalTax), "0", 0, "L", false, 0, "")
+		// Draw TAX amount
+		pdf.SetX(162)
+		pdf.SetFillColor(GreyBgColor[0], GreyBgColor[1], GreyBgColor[2])
+		pdf.Rect(160, pdf.GetY(), 40, 10, "F")
+		pdf.CellFormat(40, 10, ac.FormatMoneyDecimal(totalTax), "0", 0, "L", false, 0, "")
+	}
 
 	// Draw TOTAL TTC title
-	pdf.SetY(pdf.GetY() + 10)
-	pdf.SetX(120)
-	pdf.SetFillColor(DarkBgColor[0], DarkBgColor[1], DarkBgColor[2])
-	pdf.Rect(120, pdf.GetY(), 40, 10, "F")
-	pdf.CellFormat(38, 10, encodeString(d.Options.TextTotalWithTax), "0", 0, "R", false, 0, "")
+	if len(d.Options.TextTotalWithTax) > 1 {
+		pdf.SetY(pdf.GetY() + 10)
+		pdf.SetX(120)
+		pdf.SetFillColor(DarkBgColor[0], DarkBgColor[1], DarkBgColor[2])
+		pdf.Rect(120, pdf.GetY(), 40, 10, "F")
+		pdf.CellFormat(38, 10, encodeString(d.Options.TextTotalWithTax), "0", 0, "R", false, 0, "")
 
-	// Draw TOTAL TTC amount
-	pdf.SetX(162)
-	pdf.SetFillColor(GreyBgColor[0], GreyBgColor[1], GreyBgColor[2])
-	pdf.Rect(160, pdf.GetY(), 40, 10, "F")
-	pdf.CellFormat(40, 10, ac.FormatMoneyDecimal(totalWithTax), "0", 0, "L", false, 0, "")
+		// Draw TOTAL TTC amount
+		pdf.SetX(162)
+		pdf.SetFillColor(GreyBgColor[0], GreyBgColor[1], GreyBgColor[2])
+		pdf.Rect(160, pdf.GetY(), 40, 10, "F")
+		pdf.CellFormat(40, 10, ac.FormatMoneyDecimal(totalWithTax), "0", 0, "L", false, 0, "")
+	}
 }
 
 func (d *Document) appendPaymentTerm(pdf *gofpdf.Fpdf) {

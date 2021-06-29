@@ -128,47 +128,53 @@ func (i *Item) appendColTo(options *Options, pdf *gofpdf.Fpdf) {
 	colHeight := pdf.GetY() - baseY
 
 	// Unit price
-	pdf.SetY(baseY)
-	pdf.SetX(ItemColUnitPriceOffset)
-	pdf.CellFormat(
-		ItemColQuantityOffset-ItemColUnitPriceOffset,
-		colHeight,
-		ac.FormatMoneyDecimal(i.unitCost()),
-		"0",
-		0,
-		"",
-		false,
-		0,
-		"",
-	)
+	if len(options.TextItemsUnitCostTitle) > 1 {
+		pdf.SetY(baseY)
+		pdf.SetX(ItemColUnitPriceOffset)
+		pdf.CellFormat(
+			ItemColQuantityOffset-ItemColUnitPriceOffset,
+			colHeight,
+			ac.FormatMoneyDecimal(i.unitCost()),
+			"0",
+			0,
+			"",
+			false,
+			0,
+			"",
+		)
+	}
 
 	// Quantity
-	pdf.SetX(ItemColQuantityOffset)
-	pdf.CellFormat(
-		ItemColTaxOffset-ItemColQuantityOffset,
-		colHeight,
-		i.quantity().String(),
-		"0",
-		0,
-		"",
-		false,
-		0,
-		"",
-	)
+	if len(options.TextItemsQuantityTitle) > 1 {
+		pdf.SetX(ItemColQuantityOffset)
+		pdf.CellFormat(
+			ItemColTaxOffset-ItemColQuantityOffset,
+			colHeight,
+			i.quantity().String(),
+			"0",
+			0,
+			"",
+			false,
+			0,
+			"",
+		)
+	}
 
 	// Total HT
-	pdf.SetX(ItemColTotalHTOffset)
-	pdf.CellFormat(
-		ItemColTaxOffset-ItemColTotalHTOffset,
-		colHeight,
-		ac.FormatMoneyDecimal(i.totalWithoutTax()),
-		"0",
-		0,
-		"",
-		false,
-		0,
-		"",
-	)
+	if len(options.TextItemsTotalHTTitle) > 1 {
+		pdf.SetX(ItemColTotalHTOffset)
+		pdf.CellFormat(
+			ItemColTaxOffset-ItemColTotalHTOffset,
+			colHeight,
+			ac.FormatMoneyDecimal(i.totalWithoutTax()),
+			"0",
+			0,
+			"",
+			false,
+			0,
+			"",
+		)
+	}
 
 	// ProductNumber
 	pdf.SetX(ItemColProductNumberOffset)
@@ -259,90 +265,94 @@ func (i *Item) appendColTo(options *Options, pdf *gofpdf.Fpdf) {
 
 	// Tax
 	pdf.SetX(ItemColTaxOffset)
-	if i.Tax == nil {
-		// If no tax
-		pdf.CellFormat(
-			ItemColProductNumberOffset-ItemColTaxOffset,
-			colHeight,
-			"--",
-			"0",
-			0,
-			"",
-			false,
-			0,
-			"",
-		)
-	} else {
-		// If tax
-		taxType, taxAmount := i.Tax.getTax()
-		var taxTitle string
-		var taxDesc string
-
-		if taxType == "percent" {
-			taxTitle = fmt.Sprintf("%s %s", taxAmount, encodeString("%"))
-			// get amount from percent
-			dCost := i.totalWithoutTaxAndWithDiscount()
-			dAmount := dCost.Mul(taxAmount.Div(decimal.NewFromFloat(100)))
-			taxDesc = ac.FormatMoneyDecimal(dAmount)
+	if len(options.TextItemsTaxTitle) > 1 {
+		if i.Tax == nil {
+			// If no tax
+			pdf.CellFormat(
+				ItemColProductNumberOffset-ItemColTaxOffset,
+				colHeight,
+				"--",
+				"0",
+				0,
+				"",
+				false,
+				0,
+				"",
+			)
 		} else {
-			taxTitle = fmt.Sprintf("%s %s", taxAmount, encodeString("€"))
-			dCost := i.totalWithoutTaxAndWithDiscount()
-			dPerc := taxAmount.Mul(decimal.NewFromFloat(100))
-			dPerc = dPerc.Div(dCost)
-			// get percent from amount
-			taxDesc = fmt.Sprintf("%s %%", dPerc.StringFixed(2))
+			// If tax
+			taxType, taxAmount := i.Tax.getTax()
+			var taxTitle string
+			var taxDesc string
+
+			if taxType == "percent" {
+				taxTitle = fmt.Sprintf("%s %s", taxAmount, encodeString("%"))
+				// get amount from percent
+				dCost := i.totalWithoutTaxAndWithDiscount()
+				dAmount := dCost.Mul(taxAmount.Div(decimal.NewFromFloat(100)))
+				taxDesc = ac.FormatMoneyDecimal(dAmount)
+			} else {
+				taxTitle = fmt.Sprintf("%s %s", taxAmount, encodeString("€"))
+				dCost := i.totalWithoutTaxAndWithDiscount()
+				dPerc := taxAmount.Mul(decimal.NewFromFloat(100))
+				dPerc = dPerc.Div(dCost)
+				// get percent from amount
+				taxDesc = fmt.Sprintf("%s %%", dPerc.StringFixed(2))
+			}
+
+			// tax title
+			// lastY := pdf.GetY()
+			pdf.CellFormat(
+				ItemColProductNumberOffset-ItemColTaxOffset,
+				colHeight/2,
+				taxTitle,
+				"0",
+				0,
+				"LB",
+				false,
+				0,
+				"",
+			)
+
+			// tax desc
+			pdf.SetXY(ItemColTaxOffset, baseY+(colHeight/2))
+			pdf.SetFont("Helvetica", "", SmallTextFontSize)
+			pdf.SetTextColor(GreyTextColor[0], GreyTextColor[1], GreyTextColor[2])
+
+			pdf.CellFormat(
+				ItemColProductNumberOffset-ItemColTaxOffset,
+				colHeight/2,
+				taxDesc,
+				"0",
+				0,
+				"LT",
+				false,
+				0,
+				"",
+			)
+
+			// reset font and y
+			pdf.SetFont("Helvetica", "", BaseTextFontSize)
+			pdf.SetTextColor(BaseTextColor[0], BaseTextColor[1], BaseTextColor[2])
+			pdf.SetY(baseY)
 		}
-
-		// tax title
-		// lastY := pdf.GetY()
-		pdf.CellFormat(
-			ItemColProductNumberOffset-ItemColTaxOffset,
-			colHeight/2,
-			taxTitle,
-			"0",
-			0,
-			"LB",
-			false,
-			0,
-			"",
-		)
-
-		// tax desc
-		pdf.SetXY(ItemColTaxOffset, baseY+(colHeight/2))
-		pdf.SetFont("Helvetica", "", SmallTextFontSize)
-		pdf.SetTextColor(GreyTextColor[0], GreyTextColor[1], GreyTextColor[2])
-
-		pdf.CellFormat(
-			ItemColProductNumberOffset-ItemColTaxOffset,
-			colHeight/2,
-			taxDesc,
-			"0",
-			0,
-			"LT",
-			false,
-			0,
-			"",
-		)
-
-		// reset font and y
-		pdf.SetFont("Helvetica", "", BaseTextFontSize)
-		pdf.SetTextColor(BaseTextColor[0], BaseTextColor[1], BaseTextColor[2])
-		pdf.SetY(baseY)
 	}
 
 	// TOTAL TTC
-	pdf.SetX(ItemColTotalTTCOffset)
-	pdf.CellFormat(
-		190-ItemColTotalTTCOffset,
-		colHeight,
-		ac.FormatMoneyDecimal(i.totalWithTaxAndDiscount()),
-		"0",
-		0,
-		"",
-		false,
-		0,
-		"",
-	)
+	if len(options.TextItemsTotalTTCTitle) > 1 {
+		pdf.SetX(ItemColTotalTTCOffset)
+		pdf.CellFormat(
+			190-ItemColTotalTTCOffset,
+			colHeight,
+			ac.FormatMoneyDecimal(i.totalWithTaxAndDiscount()),
+			"0",
+			0,
+			"",
+			false,
+			0,
+			"",
+		)
+	}
 
 	// Set Y for next line
 	pdf.SetY(baseY + colHeight)
