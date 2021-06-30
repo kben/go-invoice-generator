@@ -38,7 +38,7 @@ const (
 	ItemColTotalHTOffset float64 = 113
 
 	// ItemColProductNumberOffset ...
-	ItemColProductNumberOffset float64 = 140
+	ItemColProductNumberOffset float64 = 135
 
 	// ItemColTaxOffset ...
 	ItemColTaxOffset float64 = 157
