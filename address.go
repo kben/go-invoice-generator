@@ -36,5 +36,5 @@ func (a *Address) ToString() string {
 		addrString += a.Country
 	}
 
-	return addrString
+	return encodeString(addrString)
 }
