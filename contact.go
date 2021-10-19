@@ -56,7 +56,7 @@ func (c *Contact) appendContactTODoc(x float64, y float64, fill bool, logoAlign 
 
 	// Set name
 	pdf.SetFont("Helvetica", "B", 10)
-	pdf.Cell(40, 8, c.Name)
+	pdf.Cell(40, 8, encodeString(c.Name))
 	pdf.SetFont("Helvetica", "", 10)
 
 	if c.Address != nil {
