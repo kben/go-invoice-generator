@@ -72,7 +72,7 @@ func (d *Document) Build() (*gofpdf.Fpdf, error) {
 	d.appendItems(d.pdf)
 
 	// Check page height (total bloc height = 30, 45 when doc discount)
-	offset := d.pdf.GetY() + 30
+	offset := d.pdf.GetY() + 35
 	if d.Discount != nil {
 		offset += 15
 	}
@@ -103,7 +103,7 @@ func (d *Document) appendTitle(pdf *gofpdf.Fpdf) {
 	x, _, _, _ := pdf.GetMargins()
 
 	// Set x y
-	pdf.SetXY(x, BaseMarginTop+60)
+	pdf.SetXY(x, BaseMarginTop+68)
 
 	// Draw rect
 	//pdf.SetFillColor(DarkBgColor[0], DarkBgColor[1], DarkBgColor[2])
@@ -118,7 +118,7 @@ func (d *Document) appendMetas(pdf *gofpdf.Fpdf) {
 	// Append ref
 	refString := fmt.Sprintf("%s: %s", d.Options.TextRefTitle, d.Ref)
 
-	offset := 60.0
+	offset := 68.0
 	pdf.SetXY(140, BaseMarginTop+offset)
 	pdf.SetFont("Helvetica", "", 8)
 	pdf.CellFormat(50, 4, encodeString(refString), "0", 0, "L", false, 0, "")

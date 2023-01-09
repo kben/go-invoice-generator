@@ -88,5 +88,5 @@ func (c *Contact) appendCompanyContactToDoc(pdf *gofpdf.Fpdf) float64 {
 
 func (c *Contact) appendCustomerContactToDoc(pdf *gofpdf.Fpdf) float64 {
 	x, y, _, _ := pdf.GetMargins()
-	return c.appendContactTODoc(x, y+20, false, "L", pdf)
+	return c.appendContactTODoc(x+12, y+32, false, "L", pdf)
 }
