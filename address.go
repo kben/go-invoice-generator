@@ -10,6 +10,7 @@ type Address struct {
 	City       string `json:"city,omitempty"`
 	Country    string `json:"country,omitempty"`
 	Phone      string `json:"phone,omitempty"`
+	Extend     string `json:"extend,omitempty"`
 }
 
 // ToString output address as string
@@ -42,6 +43,11 @@ func (a *Address) ToString() string {
 	if len(a.Phone) > 0 {
 		addrString += "\n"
 		addrString += fmt.Sprintf("Tel.: %s", a.Phone)
+	}
+
+	if len(a.Extend) > 0 {
+		addrString += "\n"
+		addrString += a.Extend
 	}
 
 	return encodeString(addrString)
