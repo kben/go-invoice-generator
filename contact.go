@@ -3,6 +3,7 @@ package generator
 import (
 	"bytes"
 	b64 "encoding/base64"
+	"fmt"
 	"image"
 
 	"github.com/jung-kurt/gofpdf"
@@ -82,7 +83,28 @@ func (c *Contact) appendContactTODoc(x float64, y float64, fill bool, logoAlign 
 	return pdf.GetY()
 }
 
+func (c *Contact) appendContactAddressHeaderTODoc(x float64, y float64, pdf *gofpdf.Fpdf) float64 {
+	pdf.SetXY(x, y)
+	pdf.SetX(x)
+	pdf.SetFillColor(255, 255, 255)
+
+	if c.Address != nil {
+		// Address rect
+		var addrRectHeight float64 = 5
+		pdf.Rect(x, pdf.GetY(), 80, addrRectHeight, "F")
+
+		// Set address
+		pdf.SetFont("Helvetica", "", 7)
+		pdf.SetXY(x, pdf.GetY())
+		pdf.MultiCell(70, 5, fmt.Sprintf("%s - %s", encodeString(c.Name), c.Address.ToLineString()), "0", "L", false)
+	}
+
+	return pdf.GetY()
+}
+
 func (c *Contact) appendCompanyContactToDoc(pdf *gofpdf.Fpdf) float64 {
+	x, y, _, _ := pdf.GetMargins()
+	c.appendContactAddressHeaderTODoc(x+10, y+26, pdf)
 	return c.appendContactTODoc(140, BaseMarginTop, false, "L", pdf)
 }
 

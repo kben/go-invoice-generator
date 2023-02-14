@@ -52,3 +52,24 @@ func (a *Address) ToString() string {
 
 	return encodeString(addrString)
 }
+
+func (a *Address) ToLineString() string {
+	var addrString string = a.Address
+
+	if len(a.Address2) > 0 {
+		addrString += " - "
+		addrString += a.Address2
+	}
+
+	if len(a.PostalCode) > 0 {
+		addrString += " - "
+		addrString += a.PostalCode
+	}
+
+	if len(a.City) > 0 {
+		addrString += " "
+		addrString += a.City
+	}
+
+	return encodeString(addrString)
+}
