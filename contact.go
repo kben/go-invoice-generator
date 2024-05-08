@@ -91,12 +91,12 @@ func (c *Contact) appendContactAddressHeaderTODoc(x float64, y float64, pdf *gof
 	if c.Address != nil {
 		// Address rect
 		var addrRectHeight float64 = 5
-		pdf.Rect(x, pdf.GetY(), 80, addrRectHeight, "F")
+		pdf.Rect(x, pdf.GetY(), 100, addrRectHeight, "F")
 
 		// Set address
-		pdf.SetFont("Helvetica", "", 7)
+		pdf.SetFont("Helvetica", "", 6)
 		pdf.SetXY(x, pdf.GetY())
-		pdf.MultiCell(70, 5, fmt.Sprintf("%s - %s", encodeString(c.Name), c.Address.ToLineString()), "0", "L", false)
+		pdf.MultiCell(90, 5, fmt.Sprintf("%s - %s", encodeString(c.Name), c.Address.ToLineString()), "0", "L", false)
 	}
 
 	return pdf.GetY()
